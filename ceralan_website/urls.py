@@ -61,4 +61,12 @@ urlpatterns = [
     re_path(r'^api/v1/units_of_sale/', include('unit_of_sale.urls')),
     re_path(r'^api/v1/delivery_options/', include('delivery_option.urls')),
     re_path(r'^api/v1/product_categories/', include('product_category.urls')),
+    re_path(r'^api/v1/products/', include('product.urls')),
+    re_path(r'^api/v1/product_images/', include('product_image.urls')),
+    re_path(r'^api/v1/shared_cars/', include('shared_car.urls')),
+    re_path(r'^api/v1/minibuses/', include('minibus.urls')),
+    re_path(r'^api/v1/car_images/', include('car_image.urls')),
+    re_path(r'^api/v1/services/', include('service.urls')),
+    re_path(r'^api/v1/drivers/', include('driver.urls')),
+    re_path(r'^api/v1/bus_stops/', include('bus_stop.urls')),
 ]

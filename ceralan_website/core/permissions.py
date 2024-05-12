@@ -21,3 +21,17 @@ class IsAdminOrReadOnly(BasePermission):
             return True
         # Deny POST request if user is not admin
         return request.user and request.user.is_superuser
+
+
+class IsOwnerOrReadOnly(BasePermission):
+    """
+    Bir nesnenin sahibi ise değiştirme ve silme izni verir.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # GET, HEAD veya OPTIONS isteklerine her zaman izin ver
+        if request.method in SAFE_METHODS:
+            return True
+
+        # Ürünü oluşturan kullanıcı ise izin ver
+        return obj.seller == request.user

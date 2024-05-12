@@ -12,7 +12,7 @@ class NewsImageCreateList(generics.ListCreateAPIView):
     serializer_class = NewsImageSerializer
     queryset = NewsImage.active.all()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, MyOrderingFilter]
-    filterset_fields = ['news']  # filter images based on the associated news
+    filterset_fields = ['news__title']  # filter images based on the associated news
     search_fields = ['news__title']  # search images based on the title of the associated news
     renderer_classes = [JSONResponseRenderer]
     ordering_fields = '__all__'

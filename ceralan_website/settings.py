@@ -47,6 +47,14 @@ INSTALLED_APPS = [
     "unit_of_sale",
     "delivery_option",
     "product_category",
+    "product",
+    "product_image",
+    "shared_car",
+    "minibus",
+    "car_image",
+    "service",
+    "driver",
+    "bus_stop",
 ]
 
 MIDDLEWARE = [

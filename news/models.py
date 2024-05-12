@@ -9,7 +9,7 @@ class News(BaseModel):
     news_category = models.ForeignKey('news_category.NewsCategory', on_delete=models.CASCADE,
                                       related_name='news')
     image = models.ImageField(
-        upload_to='news_images',
+        upload_to='news_images/{news_category}/',
         validators=[
             FileExtensionValidator(['jpg', 'jpeg', 'png']),
         ],
