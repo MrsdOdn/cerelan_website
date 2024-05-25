@@ -16,28 +16,58 @@ class UserSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {'password': {'write_only': True}}
 
+    def create(self, validated_data):
+        user = MyUser(
+            email=validated_data['email'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            phone_number=validated_data['phone_number']
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
+        password = validated_data.get('password', None)
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance
+
 
 class TokenVerifySerializer(serializers.Serializer):
     token = serializers.CharField()
 
     def validate(self, attrs):
-        token = UntypedToken(attrs["token"])
+        token = attrs.get("token")
 
-        if (
-                api_settings.BLACKLIST_AFTER_ROTATION
-                and "rest_framework_simplejwt.token_blacklist"
-                in settings.INSTALLED_APPS
-        ):
-            jti = token.get(api_settings.JTI_CLAIM)
+        # Tokenin payload'ını al
+        token_payload = UntypedToken(token).payload
+
+        # Payload içindeki user_id'yi al
+        user_id = token_payload.get('user_id')
+
+        if not user_id:
+            raise ValidationError("Invalid token: Missing user_id")
+
+        # user_id ile kullanıcıyı sorgula
+        try:
+            user = MyUser.objects.get(id=user_id)
+        except MyUser.DoesNotExist:
+            raise ValidationError("User not found for the provided token")
+
+        # Tokenin blacklist olup olmadığını kontrol et
+        if api_settings.BLACKLIST_AFTER_ROTATION and "rest_framework_simplejwt.token_blacklist" in settings.INSTALLED_APPS:
+            jti = token_payload.get(api_settings.JTI_CLAIM)
             if BlacklistedToken.objects.filter(token__jti=jti).exists():
                 raise ValidationError("Token is blacklisted")
-        data = super().validate(attrs)
-        data['data'] = UserSerializer(
-            MyUser.objects.filter(id=token['user_id']).first(),
-            context={
-                'request': self.context.get('request')
-            }).data
-        data['data']['token'] = data['token']
+
+        data = {'token': attrs['token']}
+        data['data'] = UserSerializer(user, context={'request': self.context.get('request')}).data
         return data
 
 
@@ -51,6 +81,9 @@ class TokenObtainPairSerializer(TokenObtainSerializer):
         response = {
             "refresh": str(refresh),
             "access": str(refresh.access_token),
+            "isAdmin": self.user.is_superuser,
+            # isAdmin değerini kullanıcının süper kullanıcı olup olmadığına göre belirleyin
+            "id": self.user.id,
         }
         data['data'] = response
 
@@ -73,11 +106,8 @@ class TokenRefreshSerializer(serializers.Serializer):
         if api_settings.ROTATE_REFRESH_TOKENS:
             if api_settings.BLACKLIST_AFTER_ROTATION:
                 try:
-                    # Attempt to blacklist the given refresh token
                     refresh.blacklist()
                 except AttributeError:
-                    # If blacklist app not installed, `blacklist` method will
-                    # not be present
                     pass
 
             refresh.set_jti()

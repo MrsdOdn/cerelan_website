@@ -1,5 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, filters
+from rest_framework import generics, filters, permissions
 from ceralan_website.core.filter import MyOrderingFilter
 from ceralan_website.core.renderer import JSONResponseRenderer
 from unit_of_sale.models import UnitOfSale
@@ -10,6 +10,7 @@ from unit_of_sale.serializers import UnitOfSaleSerializer
 class UnitOfSaleCreateList(generics.ListCreateAPIView):
     serializer_class = UnitOfSaleSerializer
     queryset = UnitOfSale.active.all()
+    permission_classes = [permissions.IsAdminUser]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter,
                        MyOrderingFilter]
     filterset_fields = 'unit_name'
@@ -21,3 +22,4 @@ class UnitOfSaleCreateList(generics.ListCreateAPIView):
 class UnitOfSaleDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UnitOfSaleSerializer
     queryset = UnitOfSale.active.all()
+    permission_classes = [permissions.IsAuthenticated]

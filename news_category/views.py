@@ -1,5 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, filters
+from rest_framework import generics, filters, permissions
 
 from ceralan_website.core.filter import MyOrderingFilter
 from ceralan_website.core.renderer import JSONResponseRenderer
@@ -11,6 +11,7 @@ from news_category.serializers import NewsCategorySerializer
 class NewsCategoryCreateList(generics.ListCreateAPIView):
     serializer_class = NewsCategorySerializer
     queryset = NewsCategory.active.all()
+    permission_classes = [permissions.IsAdminUser]  # Herkese görünmesine izin verir, sadece adminler oluşturabilir
     filter_backends = [DjangoFilterBackend, filters.SearchFilter,
                        MyOrderingFilter]
     filterset_fields = 'name'
@@ -22,3 +23,4 @@ class NewsCategoryCreateList(generics.ListCreateAPIView):
 class NewsCategoryDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = NewsCategorySerializer
     queryset = NewsCategory.active.all()
+    permission_classes = [permissions.IsAuthenticated]

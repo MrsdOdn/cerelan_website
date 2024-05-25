@@ -6,4 +6,4 @@ from news.views import NewsDetail, NewsCreateList
 urlpatterns = [
                   path('', NewsCreateList.as_view()),
                   path('<int:pk>/', NewsDetail.as_view()),
-              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+              ]

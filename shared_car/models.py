@@ -1,7 +1,15 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from ceralan_website.core.base_model import BaseModel
 from django.core.validators import FileExtensionValidator
 from django.utils.translation import gettext_lazy as _
+
+
+def validate_image_size(image):
+    file_size = image.file.size
+    limit_kb = 5120  # 5 MB limit
+    if file_size > limit_kb * 1024:
+        raise ValidationError("Maksimum dosya boyutu 5MB'dir.")
 
 
 class SharedCar(BaseModel):
@@ -16,6 +24,7 @@ class SharedCar(BaseModel):
         upload_to='shared_car_images/',
         validators=[
             FileExtensionValidator(['jpg', 'jpeg', 'png']),
+            validate_image_size,
         ],
         help_text=_('Lütfen JPG, JPEG veya PNG formatında bir resim yükleyin.')
     )
