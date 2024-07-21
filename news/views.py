@@ -1,5 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, filters, permissions
+
+from ceralan_website.core.permissions import IsAdminOrReadOnly
 from news.models import News
 from news.serializers import NewsSerializer
 from ceralan_website.core.filter import MyOrderingFilter
@@ -24,7 +26,7 @@ class NewsCreateList(generics.ListCreateAPIView):
     """
     serializer_class = NewsSerializer
     queryset = News.active.all()
-    permission_classes = [permissions.IsAdminUser]  # Herkese görünmesine izin verir, sadece adminler oluşturabilir
+    permission_classes = [IsAdminOrReadOnly]  # Herkese görünmesine izin verir, sadece adminler oluşturabilir
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, MyOrderingFilter]
     filterset_fields = ('title', 'news_category')
     search_fields = ('title', 'news_category')

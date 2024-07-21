@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -55,7 +56,6 @@ INSTALLED_APPS = [
     "service",
     "driver",
     "bus_stop",
-    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -192,6 +192,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Frontend URL'nizi buraya ekleyin
+]
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
 ]
 
 # Default primary key field type

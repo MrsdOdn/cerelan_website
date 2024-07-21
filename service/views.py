@@ -2,6 +2,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, filters, permissions
 
 from ceralan_website.core.filter import MyOrderingFilter
+from ceralan_website.core.permissions import IsAdminOrReadOnly
 from ceralan_website.core.renderer import JSONResponseRenderer
 from service.models import Service
 from service.serializers import ServiceSerializer
@@ -11,11 +12,11 @@ from service.serializers import ServiceSerializer
 class ServiceCreateList(generics.ListCreateAPIView):
     serializer_class = ServiceSerializer
     queryset = Service.active.all()
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter,
                        MyOrderingFilter]
-    filterset_fields = 'city'
-    search_fields = 'city'
+    filterset_fields = ['city']
+    search_fields = ['city']
     renderer_classes = [JSONResponseRenderer]
     ordering_fields = '__all__'
 

@@ -12,8 +12,8 @@ class CarImageCreateList(generics.ListCreateAPIView):
     serializer_class = CarImageSerializer
     queryset = CarImage.active.all()
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, MyOrderingFilter]
-    filterset_fields = ['id', 'created_at', ]  # filter images based on the associated news
-    search_fields = ['id', 'created_at']  # search images based on the title of the associated news
+    filterset_fields = ['id', 'created_at', ]
+    search_fields = ['id', 'created_at']
     renderer_classes = [JSONResponseRenderer]
     ordering_fields = '__all__'
 

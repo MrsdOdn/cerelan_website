@@ -13,7 +13,7 @@ class Minibus(BaseModel):
     drop_off_location = models.CharField(max_length=64, blank=False, null=False)
     pickup_time = models.DateTimeField(blank=False, null=False)
     image = models.ImageField(
-        upload_to='shared_car_images/',
+        upload_to='minibus_images/',
         validators=[
             FileExtensionValidator(['jpg', 'jpeg', 'png']),
         ],

@@ -2,8 +2,10 @@ from rest_framework import pagination
 from rest_framework.response import Response
 
 ''' Bu sınıf, bir API sonucunun sayfalama bilgilerini içeren JSON yanıtları oluşturur.'''
+
+
 class CustomPagination(pagination.PageNumberPagination):
-    page_size = 10
+    page_size = 120
     page_size_query_param = 'items_per_page'
     max_page_size = 1000
 

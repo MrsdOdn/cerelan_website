@@ -4,12 +4,17 @@ from django.core.validators import FileExtensionValidator
 from django.utils.translation import gettext_lazy as _
 
 
+def news_image_upload_path(instance, filename):
+    category_name = instance.news_category.name
+    return f'news_images/{category_name}/{filename}'
+
+
 class News(BaseModel):
     author = models.ForeignKey('account.MyUser', on_delete=models.CASCADE, related_name='news')
     news_category = models.ForeignKey('news_category.NewsCategory', on_delete=models.CASCADE,
                                       related_name='news')
     image = models.ImageField(
-        upload_to='news_images/{news_category}/',
+        upload_to=news_image_upload_path,
         validators=[
             FileExtensionValidator(['jpg', 'jpeg', 'png']),
         ],

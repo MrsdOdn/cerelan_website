@@ -2,6 +2,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, filters, permissions
 
 from ceralan_website.core.filter import MyOrderingFilter
+from ceralan_website.core.permissions import IsAdminOrReadOnly
 from ceralan_website.core.renderer import JSONResponseRenderer
 from product_category.models import ProductCategory
 from product_category.serializers import ProductCategorySerializer
@@ -11,11 +12,11 @@ from product_category.serializers import ProductCategorySerializer
 class ProductCategoryCreateList(generics.ListCreateAPIView):
     serializer_class = ProductCategorySerializer
     queryset = ProductCategory.active.all()
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter,
                        MyOrderingFilter]
-    filterset_fields = ['name', 'parent__name']
-    search_fields = ['name', 'parent__name']
+    filterset_fields = ['name', 'parent']
+    search_fields = ['name', 'parent']
     renderer_classes = [JSONResponseRenderer]
     ordering_fields = '__all__'
 

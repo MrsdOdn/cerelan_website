@@ -5,6 +5,7 @@ from driver.models import Driver
 from driver.serializers import DriverSerializer
 from ceralan_website.core.filter import MyOrderingFilter
 from ceralan_website.core.renderer import JSONResponseRenderer
+from service.serializers import ServiceSerializer
 
 
 # Create your views here.
